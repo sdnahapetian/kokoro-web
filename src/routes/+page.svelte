@@ -13,6 +13,7 @@
   import ExecutionPlacePicker from "./ExecutionPlacePicker.svelte";
   import VersionChecker from "./VersionChecker.svelte";
   import { profile } from "./store.svelte";
+  import FileDropInput from "./FileDropInput.svelte";
   import { generate } from "./generate";
 
   let webgpuSupported = $state(false);
@@ -88,6 +89,8 @@
 
     <VoicePicker />
   </div>
+
+  <FileDropInput ontext={(text) => (profile.text = text)} />
 
   <TextareaControl
     bind:value={profile.text}

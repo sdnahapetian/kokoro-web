@@ -17,6 +17,9 @@
   let isPlaying = $state(false);
   let totalDuration = $state("0:00");
   let currentTime = $state("0:00");
+  let playbackRate = $state(1);
+
+  const RATES = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
 
   // Re-render when the audio URL changes, but not when the last URL is the same
   let lastAudioUrl = $state("");
@@ -24,6 +27,13 @@
     if (audioUrl && audioUrl !== lastAudioUrl) {
       createWaveSurfer();
       lastAudioUrl = audioUrl;
+    }
+  });
+
+  // Keep WaveSurfer in sync whenever playbackRate changes
+  $effect(() => {
+    if (waveSurfer) {
+      waveSurfer.setPlaybackRate(playbackRate);
     }
   });
 
@@ -98,6 +108,7 @@
 
     waveSurfer.on("ready", (newTotalDuration) => {
       totalDuration = secondsToMinutes(newTotalDuration);
+      waveSurfer?.setPlaybackRate(playbackRate);
     });
 
     waveSurfer.on("timeupdate", (newCurrentTime) => {
@@ -143,6 +154,21 @@
       </div>
 
       <div class="flex items-center justify-end space-x-2">
+        <div class="flex items-center gap-1">
+          {#each RATES as rate}
+            <button
+              class={{
+                "btn btn-xs": true,
+                "btn-primary": playbackRate === rate,
+                "btn-ghost": playbackRate !== rate,
+              }}
+              onclick={() => (playbackRate = rate)}
+            >
+              {rate}x
+            </button>
+          {/each}
+        </div>
+
         <a href={audioUrl} download class="btn btn-ghost btn-circle">
           <span class="tooltip tooltip-left" data-tip="Download">
             <Download class="size-6" />

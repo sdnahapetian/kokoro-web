@@ -1,0 +1,12 @@
+services:
+  kokoro-web:
+    image: ghcr.io/sdnahapetian/kokoro-web:latest
+    container_name: kokoro-web
+    ports:
+      - "3000:3000"
+    environment:
+      - KW_SECRET_API_KEY=${KW_SECRET_API_KEY}
+      - KW_PUBLIC_NO_TRACK=true
+    volumes:
+      - ./kokoro-cache:/kokoro/cache
+    restart: unless-stopped
